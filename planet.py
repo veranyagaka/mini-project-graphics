@@ -1,4 +1,4 @@
-from vpython import *
+from vpython import canvas, sphere, vector, textures, rate
 
 # Create a 3D scene
 scene = canvas(width=1280, height=720)
