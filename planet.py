@@ -1,8 +1,14 @@
-from vpython import canvas, sphere, vector, textures, rate
+from vpython import canvas, sphere, vector, textures, rate, box
 
 # Create a 3D scene
-scene = canvas(width=1280, height=720)
+scene = canvas(width=1920, height=900)
 
+# Background image setup
+background = box(
+    pos=vector(0, 0, 0),
+    size=vector(20, 10, 0.1),
+    texture="background.png"
+)
 
 # Create Earth
 earth = sphere(pos=vector(-3.0, 0, 0), radius=1.2, texture=textures.earth)
