@@ -1,5 +1,5 @@
 # Planetmove.py
-from vpython import rate, mag, color, sphere, vector, keysdown
+from vpython import rate, mag, color, sphere, vector, keysdown , random
 from planet import create_planets
 
 # Retrieve Earth and Mars from planet module
@@ -26,6 +26,11 @@ def toggle_pause(event):
 # Bind the toggle_pause function to keydown events
 scene.bind('keydown', toggle_pause)
 
+# Fragmentation parameters
+num_fragments = 100  # Number of fragments to create upon collision
+fragment_speed = 0.1  # Initial speed of each fragment
+
+
 # Animation loop
 while True:
     rate(60)
@@ -38,7 +43,48 @@ while True:
     earth.pos += earth.velocity * 0.01
     mars.pos += mars.velocity * 0.01
 
-    # Check for collision
+     # Check for collision
+    if mag(earth.pos - mars.pos) <= collision_distance:
+        # Set the collision point and calculate properties for fragments
+        collision_point = (earth.pos + mars.pos) / 2
+
+        # Generate fragments upon collision
+        fragments = []
+        for _ in range(num_fragments):
+            # Assign random directions to fragments
+            random_direction = vector(
+                random() - 0.5,  # Random X direction
+                random() - 0.5,  # Random Y direction
+                random() - 0.5   # Random Z direction
+            ).norm()  # Normalize to ensure uniform speed
+            
+            fragment_velocity = random_direction * fragment_speed
+
+            # Create a fragment with a smaller radius and initial position
+            fragment = sphere(
+                pos=collision_point,
+                radius=0.1,  # Smaller radius for each fragment
+                color=color.blue
+            )
+            fragment.velocity = fragment_velocity
+            fragments.append(fragment)
+
+        # Hide Earth and Mars after collision
+        earth.visible = False
+        mars.visible = False
+
+        # Move fragments outward
+        while True:
+            rate(10)  # Control the speed of fragment animation
+            if is_paused:
+                continue  # Skip updates if paused
+            
+            for fragment in fragments:
+                fragment.pos += fragment.velocity  # Update fragment positions
+            # Optionally: Add a condition to stop the loop after some time or distance
+        break
+
+'''# Check for collision
     if mag(earth.pos - mars.pos) <= collision_distance:
         new_mass = earth.mass + mars.mass
         new_radius = (earth.radius ** 3 + mars.radius ** 3) ** (1 / 3)
@@ -51,4 +97,4 @@ while True:
 
         earth.visible = False
         mars.visible = False
-        break
+        break'''
